@@ -7,4 +7,6 @@ public class ProductQueryParameter {
     private String keyword;
     private String orderBy;
     private String sortRule;
+    private Integer priceFrom;
+    private Integer priceTo;
 }
