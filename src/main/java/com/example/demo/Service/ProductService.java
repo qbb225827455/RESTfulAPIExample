@@ -1,14 +1,11 @@
 package com.example.demo.Service;
 
 import com.example.demo.Exception.NotFound;
-import com.example.demo.Exception.UnprocessableEntity;
 import com.example.demo.Model.Product;
 import com.example.demo.Model.ProductQueryParameter;
-import com.example.demo.Repository.MockProductDAO;
 import com.example.demo.Repository.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
