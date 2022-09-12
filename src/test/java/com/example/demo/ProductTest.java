@@ -1,6 +1,9 @@
 package com.example.demo;
 
+import com.example.demo.Repository.ProductRepo;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +25,24 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 // https://chikuwa-tech-study.blogspot.com/2021/05/spring-boot-mockmvc-integration-test-1.html
 public class ProductTest {
 
+    private HttpHeaders httpHeaders;
+
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ProductRepo productRepo;
+
+    @Before
+    public void init() {
+        httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    @After
+    public void clear() {
+        productRepo.deleteAll();
+    }
 
     @Test
     public void testCreateProduct() throws Exception {
