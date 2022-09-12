@@ -2,6 +2,7 @@ package com.example.demo.Controller;
 
 import com.example.demo.Model.Product;
 import com.example.demo.Model.ProductQueryParameter;
+import com.example.demo.Model.ProductRequest;
 import com.example.demo.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -36,8 +37,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product request) {
-
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody ProductRequest request) {
         Product product = productService.createProduct(request);
 
         URI location = ServletUriComponentsBuilder
@@ -51,7 +51,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> replaceProduct(
-            @PathVariable("id") String id, @Valid @RequestBody Product request) {
+            @PathVariable("id") String id, @Valid @RequestBody ProductRequest request) {
 
         Product product = productService.replaceProduct(id, request);
         return  ResponseEntity.ok().body(product);

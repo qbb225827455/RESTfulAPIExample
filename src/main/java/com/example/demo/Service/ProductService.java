@@ -1,8 +1,10 @@
 package com.example.demo.Service;
 
+import com.example.demo.Converter.ProductConverter;
 import com.example.demo.Exception.NotFound;
 import com.example.demo.Model.Product;
 import com.example.demo.Model.ProductQueryParameter;
+import com.example.demo.Model.ProductRequest;
 import com.example.demo.Repository.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -18,11 +20,9 @@ public class ProductService {
     @Autowired
     private ProductRepo productRepo;
 
-    public Product createProduct(Product request) {
+    public Product createProduct(ProductRequest request) {
 
-        Product product = new Product();
-        product.setName(request.getName());
-        product.setPrice(request.getPrice());
+        Product product = ProductConverter.convertToProduct(request);
 
         return productRepo.insert(product);
     }
@@ -32,14 +32,12 @@ public class ProductService {
                 .orElseThrow(() -> new NotFound("Can't find product."));
     }
 
-    public Product replaceProduct(String id, Product request) {
+    public Product replaceProduct(String id, ProductRequest request) {
 
         Product oProduct = getProduct(id);
 
-        Product product = new Product();
+        Product product = ProductConverter.convertToProduct(request);
         product.setId(oProduct.getId());
-        product.setName(request.getName());
-        product.setPrice(request.getPrice());
 
         return productRepo.save(product);
     }
