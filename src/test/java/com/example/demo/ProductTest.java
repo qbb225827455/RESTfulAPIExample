@@ -195,6 +195,36 @@ public class ProductTest {
                 mockHttpServletResponse.getHeader(HttpHeaders.CONTENT_TYPE));
     }
 
+    @Test
+    public void getBadRequestWtihEmptyName() throws Exception {
+
+        JSONObject request = new JSONObject()
+                .put("name", "")
+                .put("price", 123);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/products")
+                .headers(httpHeaders);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void getBadRequestWtihNegativePrice() throws Exception {
+
+        JSONObject request = new JSONObject()
+                .put("name", "Test")
+                .put("price", -123);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/products")
+                .headers(httpHeaders);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
     private Product initProduct(String name, int price) {
         Product product = new Product();
         product.setName(name);
