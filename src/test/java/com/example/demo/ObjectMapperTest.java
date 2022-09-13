@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import java.util.Date;
 
+// 參考
+// https://chikuwa-tech-study.blogspot.com/2021/05/spring-boot-jackson-annotation-basic.html
 public class ObjectMapperTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -51,7 +53,7 @@ public class ObjectMapperTest {
 
     @Test
     public void testJSONToPublisher() throws Exception {
-        
+
         JSONObject publisherJSON = new JSONObject()
                 .put("companyName", "Taipei Company")
                 .put("address", "Taipei")
