@@ -1,9 +1,9 @@
 package com.example.demo.Controller;
 
-import com.example.demo.Model.Product;
+import com.example.demo.Model.Product.Product;
 import com.example.demo.Model.ProductQueryParameter;
-import com.example.demo.Model.ProductRequest;
-import com.example.demo.Model.ProductResponse;
+import com.example.demo.Model.Product.ProductRequest;
+import com.example.demo.Model.Product.ProductResponse;
 import com.example.demo.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

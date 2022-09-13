@@ -1,8 +1,8 @@
 package com.example.demo.Converter;
 
-import com.example.demo.Model.Product;
-import com.example.demo.Model.ProductRequest;
-import com.example.demo.Model.ProductResponse;
+import com.example.demo.Model.Product.Product;
+import com.example.demo.Model.Product.ProductRequest;
+import com.example.demo.Model.Product.ProductResponse;
 
 public class ProductConverter {
 

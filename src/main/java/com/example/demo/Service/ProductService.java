@@ -2,10 +2,10 @@ package com.example.demo.Service;
 
 import com.example.demo.Converter.ProductConverter;
 import com.example.demo.Exception.NotFound;
-import com.example.demo.Model.Product;
+import com.example.demo.Model.Product.Product;
 import com.example.demo.Model.ProductQueryParameter;
-import com.example.demo.Model.ProductRequest;
-import com.example.demo.Model.ProductResponse;
+import com.example.demo.Model.Product.ProductRequest;
+import com.example.demo.Model.Product.ProductResponse;
 import com.example.demo.Repository.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
