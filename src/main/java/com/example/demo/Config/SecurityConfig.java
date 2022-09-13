@@ -23,13 +23,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeHttpRequests()
                 // "/users" 這個API底下的GET請求，都要通過身份驗證且具備管理員身份。
-                .antMatchers(HttpMethod.GET, "/users/**").hasAuthority(UserAuthority.ADMIN.name())
-                // 其他API底下的GET請求，都要通過身份驗證。
-                .antMatchers(HttpMethod.GET).authenticated()
+                .antMatchers(HttpMethod.GET, "/users").hasAuthority(UserAuthority.ADMIN.name())
+
+                .antMatchers(HttpMethod.GET, "/users/*").authenticated()
+                .antMatchers(HttpMethod.GET).permitAll()
+
                 // "/users" 這個API底下的POST請求，所有呼叫都允許。
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
+
+                // "/auth" & "/auth/parse" 這API底下的POST請求，所有呼叫都允許。
+                .antMatchers(HttpMethod.POST, "/auth").permitAll()
+                .antMatchers(HttpMethod.POST, "/auth/parse").permitAll()
+
                 // 其餘API都要通過身份驗證。
                 .anyRequest().authenticated()
+
                 .and()
                 // 關閉對CSRF(跨站請求偽造)攻擊的防護，這樣才不會拒絕外部直接對API發出的請求，如Postman或前端。
                 .csrf().disable()
