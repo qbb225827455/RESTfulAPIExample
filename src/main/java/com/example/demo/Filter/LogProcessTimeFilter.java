@@ -18,6 +18,7 @@ public class LogProcessTimeFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
         long processTime = System.currentTimeMillis() - startTime;
 
+        System.out.println("#########");
         System.out.println(processTime + " ms");
     }
 }

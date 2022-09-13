@@ -21,6 +21,7 @@ public class LogAPIFilter extends OncePerRequestFilter {
 
         LogAPI(request, response);
         LogBody(requestWrapper, responseWrapper);
+        System.out.println("#########");
 
         responseWrapper.copyBodyToResponse();
     }
