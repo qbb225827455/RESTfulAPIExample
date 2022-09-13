@@ -7,6 +7,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public class LogProcessTimeFilter extends OncePerRequestFilter {
 
@@ -18,7 +21,9 @@ public class LogProcessTimeFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
         long processTime = System.currentTimeMillis() - startTime;
 
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(startTime), ZoneId.systemDefault());
         System.out.println("#########");
+        System.out.println(localDateTime.atZone(ZoneId.systemDefault()));
         System.out.println(processTime + " ms");
     }
 }
