@@ -22,7 +22,8 @@ public class JWTService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    private final String KEY = "JavaProgrammingBeginner";
+    // 字串要足夠長，至少32個字
+    private final String KEY = "111111111JavaProgrammingBeginner";
 
     public String genToken(AuthRequest request) {
 
