@@ -5,6 +5,7 @@ import com.example.demo.Exception.NotFound;
 import com.example.demo.Model.Product;
 import com.example.demo.Model.ProductQueryParameter;
 import com.example.demo.Model.ProductRequest;
+import com.example.demo.Model.ProductResponse;
 import com.example.demo.Repository.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -20,26 +22,37 @@ public class ProductService {
     @Autowired
     private ProductRepo productRepo;
 
-    public Product createProduct(ProductRequest request) {
-
-        Product product = ProductConverter.convertToProduct(request);
-
-        return productRepo.insert(product);
-    }
-
     public Product getProduct(String id) {
         return productRepo.findById(id)
                 .orElseThrow(() -> new NotFound("Can't find product."));
     }
 
-    public Product replaceProduct(String id, ProductRequest request) {
+    public ProductResponse getProductResponse(String id) {
+        Product product = productRepo.findById(id)
+                .orElseThrow(() -> new NotFound("Can't find product."));
+        return ProductConverter.ConvertToProductResponse(product);
+    }
+
+    public ProductResponse createProduct(ProductRequest request) {
+
+        Product product = new Product();
+        product.setName(request.getName());
+        product.setPrice(request.getPrice());
+        product = productRepo.insert(product);
+
+        return ProductConverter.ConvertToProductResponse(product);
+    }
+
+    public ProductResponse replaceProduct(String id, ProductRequest request) {
 
         Product oProduct = getProduct(id);
 
         Product product = ProductConverter.convertToProduct(request);
         product.setId(oProduct.getId());
 
-        return productRepo.save(product);
+        productRepo.save(product);
+
+        return ProductConverter.ConvertToProductResponse(product);
     }
 
     public void deleteProduct(String id) {
@@ -47,7 +60,7 @@ public class ProductService {
         productRepo.deleteById(id);
     }
 
-    public List<Product> getProducts(ProductQueryParameter parameter) {
+    public List<ProductResponse> getProducts(ProductQueryParameter parameter) {
 
         String keyword = Optional.ofNullable(parameter.getKeyword()).orElse("");
         int priceFrom = Optional.ofNullable(parameter.getPriceFrom()).orElse(0);
@@ -55,7 +68,11 @@ public class ProductService {
 
         Sort sort = genSort(parameter.getOrderBy(), parameter.getSortRule());
 
-        return productRepo.findByPriceBetweenAndNameLikeIgnoreCase(priceFrom, priceTo, keyword, sort);
+        List<Product> products = productRepo.findByPriceBetweenAndNameLikeIgnoreCase(priceFrom, priceTo, keyword, sort);
+
+        return products.stream()
+                .map(ProductConverter::ConvertToProductResponse)
+                .collect(Collectors.toList());
     }
 
     private Sort genSort(String orderBy, String sortRule) {
