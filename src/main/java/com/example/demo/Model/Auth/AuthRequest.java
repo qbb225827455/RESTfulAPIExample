@@ -1,4 +1,4 @@
-package com.example.demo.Auth;
+package com.example.demo.Model.Auth;
 
 import lombok.Data;
 

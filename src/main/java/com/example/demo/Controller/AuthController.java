@@ -1,6 +1,6 @@
 package com.example.demo.Controller;
 
-import com.example.demo.Auth.AuthRequest;
+import com.example.demo.Model.Auth.AuthRequest;
 import com.example.demo.Auth.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

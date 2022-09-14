@@ -1,5 +1,6 @@
 package com.example.demo.Auth;
 
+import com.example.demo.Model.Auth.AuthRequest;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
