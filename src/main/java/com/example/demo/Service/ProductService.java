@@ -1,5 +1,6 @@
 package com.example.demo.Service;
 
+import com.example.demo.Auth.UserIdentity;
 import com.example.demo.Converter.ProductConverter;
 import com.example.demo.Exception.NotFound;
 import com.example.demo.Model.Product.Product;
@@ -22,6 +23,9 @@ public class ProductService {
     @Autowired
     private ProductRepo productRepo;
 
+    @Autowired
+    private UserIdentity userIdentity;
+
     public Product getProduct(String id) {
         return productRepo.findById(id)
                 .orElseThrow(() -> new NotFound("Can't find product."));
@@ -35,9 +39,8 @@ public class ProductService {
 
     public ProductResponse createProduct(ProductRequest request) {
 
-        Product product = new Product();
-        product.setName(request.getName());
-        product.setPrice(request.getPrice());
+        Product product = ProductConverter.convertToProduct(request);
+        product.setCreator(userIdentity.getId());
         product = productRepo.insert(product);
 
         return ProductConverter.ConvertToProductResponse(product);
@@ -49,6 +52,7 @@ public class ProductService {
 
         Product product = ProductConverter.convertToProduct(request);
         product.setId(oProduct.getId());
+        product.setCreator(oProduct.getCreator());
 
         productRepo.save(product);
 
