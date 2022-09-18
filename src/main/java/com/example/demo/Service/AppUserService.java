@@ -7,12 +7,15 @@ import com.example.demo.Exception.UnprocessableEntity;
 import com.example.demo.Model.User.AppUser;
 import com.example.demo.Model.User.AppUserRequest;
 import com.example.demo.Model.User.AppUserResponse;
+import com.example.demo.Model.User.UserAuthority;
 import com.example.demo.Repository.AppUserRepo;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AppUserService {
@@ -49,8 +52,13 @@ public class AppUserService {
                 .orElseThrow(() -> new NotFound("Can't find user."));
     }
 
-    public List<AppUserResponse> getUserResponses() {
-        List<AppUser> users = repository.findAll();
+    public List<AppUserResponse> getUserResponses(List<UserAuthority> authorities) {
+        if (authorities == null || authorities.isEmpty()) {
+            authorities = Arrays.stream(UserAuthority.values())
+                    .collect(Collectors.toList());
+        }
+
+        List<AppUser> users = repository.findByAuthoritiesIn(authorities);
         return AppUserConverter.toAppUserResponses(users);
     }
 }
