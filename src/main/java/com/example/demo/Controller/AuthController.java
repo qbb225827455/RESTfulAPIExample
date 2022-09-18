@@ -2,6 +2,7 @@ package com.example.demo.Controller;
 
 import com.example.demo.Model.Auth.AuthRequest;
 import com.example.demo.Auth.JWTService;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,8 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    // 在API文件中隱藏
+    @Hidden
     @PostMapping("/parse")
     public ResponseEntity<Map<String, Object>> parseToken(@RequestBody Map<String, String> request) {
 

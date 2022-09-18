@@ -5,6 +5,7 @@ import com.example.demo.Model.ProductQueryParameter;
 import com.example.demo.Model.Product.ProductRequest;
 import com.example.demo.Model.Product.ProductResponse;
 import com.example.demo.Service.ProductService;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,8 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> getProduct(@PathVariable("id") String id) {
+    // 透過@Parameter標記，說明路徑參數。
+    public ResponseEntity<ProductResponse> getProduct(@Parameter(description = "ID of product.") @PathVariable("id") String id) {
 
         ProductResponse product = productService.getProductResponse(id);
 
