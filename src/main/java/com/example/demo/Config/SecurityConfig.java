@@ -1,6 +1,6 @@
 package com.example.demo.Config;
 
-import com.example.demo.Auth.JWTAuthenticationFilter;
+import com.example.demo.Filter.JWTAuthenticationFilter;
 import com.example.demo.Model.User.UserAuthority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
