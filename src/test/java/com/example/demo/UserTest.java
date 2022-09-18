@@ -3,21 +3,11 @@ package com.example.demo;
 import com.example.demo.Model.User.AppUser;
 import com.example.demo.Model.User.AppUserRequest;
 import com.example.demo.Model.User.UserAuthority;
-import com.example.demo.Repository.AppUserRepo;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Arrays;
@@ -30,33 +20,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-public class UserTest {
+public class UserTest extends InitTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private AppUserRepo appUserRepository;
-
-    private HttpHeaders httpHeaders;
-    private ObjectMapper mapper = new ObjectMapper();
     private final String URL_USER = "/users";
-
-    @Before
-    public void init() {
-        httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-    }
-
-    @After
-    public void clear() {
-        appUserRepository.deleteAll();
-    }
 
     @Test
     public void testCreateUser() throws Exception {
+        logout();
+
         AppUserRequest request = new AppUserRequest();
         request.setEmailAddress("admin@gmail.com");
         request.setPassword("123456");
@@ -72,7 +43,7 @@ public class UserTest {
         JSONObject responseBody = new JSONObject(result.getResponse().getContentAsString());
         String userId = responseBody.getString("id");
 
-        AppUser user = appUserRepository.findById(userId)
+        AppUser user = appUserRepo.findById(userId)
                 .orElseThrow(RuntimeException::new);
         Assert.assertEquals(request.getEmailAddress(), user.getEmailAddress());
         Assert.assertNotNull(user.getPassword());
@@ -82,13 +53,9 @@ public class UserTest {
 
     @Test
     public void testGetUser() throws Exception {
-        AppUser user = new AppUser();
-        user.setEmailAddress("vincent@gmail.com");
-        user.setPassword("123456");
-        user.setName("Vincent");
-        user.setAuthorities(Collections.singletonList(UserAuthority.NORMAL));
-        appUserRepository.insert(user);
+        AppUser user = createUser("Vincent", Collections.singletonList(UserAuthority.NORMAL));
 
+        login(user.getEmailAddress());
         mockMvc.perform(get(URL_USER + "/" + user.getId())
                         .headers(httpHeaders))
                 .andExpect(status().isOk())
@@ -102,35 +69,19 @@ public class UserTest {
 
     @Test
     public void testGetUsers() throws Exception {
-        AppUser adminUser = new AppUser();
-        adminUser.setEmailAddress("admin@gmail.com");
-        adminUser.setPassword("123456");
-        adminUser.setName("Admin");
-        adminUser.setAuthorities(Arrays.asList(UserAuthority.ADMIN, UserAuthority.NORMAL));
+        AppUser adminUser = createUser("Vincent", Arrays.asList(UserAuthority.ADMIN, UserAuthority.NORMAL));
+        createUser("Peggy", Collections.singletonList(UserAuthority.NORMAL));
 
-        AppUser normalUser = new AppUser();
-        normalUser.setEmailAddress("vincent@gmail.com");
-        normalUser.setPassword("123456");
-        normalUser.setName("Vincent");
-        normalUser.setAuthorities(Collections.singletonList(UserAuthority.NORMAL));
-
-        appUserRepository.insert(Arrays.asList(adminUser, normalUser));
-
+        login(adminUser.getEmailAddress());
         mockMvc.perform(get(URL_USER)
                         .headers(httpHeaders))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(adminUser.getId()))
-                .andExpect(jsonPath("$[1].id").value(normalUser.getId()));
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
-    public void test422WhenCreateUserWithExistingEmail() throws Exception {
-        AppUser existingUser = new AppUser();
-        existingUser.setEmailAddress("vincent@gmail.com");
-        existingUser.setPassword("123456");
-        existingUser.setName("Vincent");
-        existingUser.setAuthorities(Collections.singletonList(UserAuthority.NORMAL));
-        appUserRepository.insert(existingUser);
+    public void test409WhenCreateUserWithExistingEmail() throws Exception {
+        AppUser existingUser = createUser("Vincent", Collections.singletonList(UserAuthority.NORMAL));
 
         AppUserRequest request = new AppUserRequest();
         request.setEmailAddress(existingUser.getEmailAddress());
@@ -146,9 +97,11 @@ public class UserTest {
 
     @Test
     public void test404WhenGetNonExistentUser() throws Exception {
+        AppUser user = createUser("Vincent", Collections.singletonList(UserAuthority.NORMAL));
+
+        login(user.getEmailAddress());
         mockMvc.perform(get(URL_USER + "/123")
                         .headers(httpHeaders))
                 .andExpect(status().isNotFound());
     }
-
 }
