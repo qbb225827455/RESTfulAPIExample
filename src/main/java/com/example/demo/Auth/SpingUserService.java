@@ -26,11 +26,12 @@ public class SpingUserService implements UserDetailsService {
 
         try {
             AppUser user = appUserService.getUserByEmail(username);
-            List<SimpleGrantedAuthority> authorities = user.getAuthorities().stream()
-                    .map(auth -> new SimpleGrantedAuthority(auth.name()))
-                    .collect(Collectors.toList());
+//            List<SimpleGrantedAuthority> authorities = user.getAuthorities().stream()
+//                    .map(auth -> new SimpleGrantedAuthority(auth.name()))
+//                    .collect(Collectors.toList());
 
-            return new User(user.getEmailAddress(), user.getPassword(), authorities);
+            return new SpringUser(user);
+                    // new User(user.getEmailAddress(), user.getPassword(), authorities);
         } catch (NotFound e) {
             throw new UsernameNotFoundException("Username is wrong");
         }

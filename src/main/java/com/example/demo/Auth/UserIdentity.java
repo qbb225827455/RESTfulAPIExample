@@ -1,34 +1,33 @@
 package com.example.demo.Auth;
 
-import com.example.demo.Service.AppUserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.Model.User.AppUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserIdentity {
 
-    @Autowired
-    private AppUserService appUserService;
+    private final SpringUser EMPTY_USER = new SpringUser(new AppUser());
 
-    private UserDetails getUserDetail() {
+    private SpringUser getSpringUser() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
-        return (UserDetails) principal;
+        return principal.equals("anonymousUser")
+                ? EMPTY_USER
+                : (SpringUser) principal;
     }
 
     public String getId() {
-        return appUserService.getUserByEmail(getUserDetail().getUsername()).getId();
+        return getSpringUser().getId();
     }
 
     public String getName() {
-        return appUserService.getUserByEmail(getUserDetail().getUsername()).getName();
+        return getSpringUser().getName();
     }
 
     public String getEmailAddress() {
-        return appUserService.getUserByEmail(getUserDetail().getUsername()).getEmailAddress();
+        return getSpringUser().getUsername();
     }
 }
